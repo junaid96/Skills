@@ -1,100 +1,105 @@
 ---
 name: kotlin-language
-description: Comprehensive Kotlin development, architecture, build, testing, debugging, compiler, plugin, and repository-contribution guidance across Kotlin/JVM, Android, Kotlin/JS, Kotlin/Wasm, Kotlin/Native, Kotlin Multiplatform, and Compose Multiplatform. Use when writing, reviewing, troubleshooting, building, testing, publishing, or contributing to Kotlin projects or the JetBrains/kotlin repository.
+description: Full-spectrum Kotlin engineering guidance for language design, JVM and Android, Kotlin/JS, Kotlin/Wasm, Kotlin/Native, Kotlin Multiplatform, Compose Multiplatform, Gradle/KGP, Maven, compiler/FIR/K2/IR/backends, Analysis API, PSI/IDE/JPS, compiler plugins, KSP/kapt, testing, publishing, compatibility, migration, performance, and JetBrains/kotlin repository contribution. Use when writing, reviewing, debugging, building, testing, publishing, upgrading, or contributing to Kotlin projects on any supported platform.
 ---
 
-# Kotlin Language and Platform Engineering
+# Kotlin Platform and Repository Engineering
 
-Use this skill to solve Kotlin tasks from application code through compiler and repository work. Treat the JetBrains Kotlin repository as the primary source for compiler, standard-library, build, plugin, test-infrastructure, and platform implementation details, while using current official Kotlin documentation for user-facing APIs and target stability. Do not copy the repository wholesale into context; inspect only the area needed for the request.
+Use this skill to solve Kotlin tasks from application code through compiler and repository work. Treat the JetBrains Kotlin repository as the primary source for compiler, library, build, plugin, test-infrastructure, and platform implementation details. Use current official Kotlin, Android, Gradle, Compose, and target-runtime documentation for user-facing APIs and version-sensitive claims. Do not copy the repository wholesale into context; load only the reference needed for the active task.
 
-## First classify the task
+## Classify the request first
 
-Determine which workflow applies before editing or proposing code:
+Determine the runtime, build layer, source-set boundary, artifact, and risk before editing or proposing code.
 
-| Request type | Start here | Read next |
-| --- | --- | --- |
-| Kotlin language, idioms, standard library, reflection, scripting, or tests | Identify the runtime and API constraints | [language-and-libraries.md](references/language-and-libraries.md) |
-| JVM or Android application/library | Confirm JDK, Android, Gradle, and framework versions | [platforms.md](references/platforms.md), [build-and-tooling.md](references/build-and-tooling.md) |
-| JavaScript or browser/server JavaScript | Confirm browser/Node target, module format, npm dependencies, and interop needs | [platforms.md](references/platforms.md) |
-| WebAssembly or Compose Multiplatform web | Confirm `wasm-js` versus WASI and browser/runtime requirements | [platforms.md](references/platforms.md) |
-| Native, Apple, Linux, Windows, or C/Objective-C/Swift interop | Confirm host OS, SDKs, target, linkage, and exported API | [platforms.md](references/platforms.md) |
-| Kotlin Multiplatform or shared code | Map common, intermediate, and platform source sets and expect/actual boundaries | [platforms.md](references/platforms.md) |
-| Compiler, FIR/K2, IR, diagnostics, PSI, Analysis API, backend, or compiler plugin | Locate the subsystem and read its local guidance before modifying code | [compiler-and-analysis.md](references/compiler-and-analysis.md) |
-| Kotlin Gradle Plugin, Maven, JPS, IDE tooling, or build failure | Identify the build layer and reproduce with the smallest relevant task | [build-and-tooling.md](references/build-and-tooling.md) |
-| Work in `JetBrains/kotlin` or contribution review | Read repository and area-specific guidance before investigation, edits, or tests | [repository-contribution.md](references/repository-contribution.md) |
+| Request | Read |
+| --- | --- |
+| Language, idioms, standard library, coroutines, serialization, performance, or public API | [advanced-language.md](references/advanced-language.md), [language-and-libraries.md](references/language-and-libraries.md) |
+| JVM, Java interop, Android, variants, resources, or release shrinking | [jvm-android.md](references/jvm-android.md), [build-and-tooling.md](references/build-and-tooling.md) |
+| JavaScript, npm, browser, Node, bundling, or module loading | [js-wasm.md](references/js-wasm.md) |
+| WebAssembly or Compose web | [js-wasm.md](references/js-wasm.md), [multiplatform-compose.md](references/multiplatform-compose.md) |
+| Native, Apple, C, Objective-C, Swift, frameworks, or linker failures | [native-interop.md](references/native-interop.md) |
+| Shared code, KMP source sets, target architecture, or shared UI | [platforms.md](references/platforms.md), [multiplatform-compose.md](references/multiplatform-compose.md) |
+| Gradle, KGP, compiler options, dependency resolution, build logic, or publication | [gradle-kgp.md](references/gradle-kgp.md), [publishing-compatibility.md](references/publishing-compatibility.md) |
+| Compiler, K1/K2, FIR, IR, diagnostics, lowering, code generation, or backend | [compiler-internals-deep.md](references/compiler-internals-deep.md), [compiler-and-analysis.md](references/compiler-and-analysis.md) |
+| Analysis API, PSI, IDE, or JPS | [analysis-psi-ide.md](references/analysis-psi-ide.md) |
+| Compiler plugins, KSP, kapt, serialization plugin, or generated code | [plugins-codegen.md](references/plugins-codegen.md) |
+| Testing, CI, flaky failures, performance, or test selection | [testing-diagnostics.md](references/testing-diagnostics.md) |
+| Kotlin or KMP upgrade, deprecation, or compatibility migration | [migrations.md](references/migrations.md), [publishing-compatibility.md](references/publishing-compatibility.md) |
+| Work in `JetBrains/kotlin` | [repository-areas-deep.md](references/repository-areas-deep.md), [repository-contribution.md](references/repository-contribution.md) |
 
-If the request spans several rows, apply each relevant reference in sequence and explicitly state the integration boundary.
+When a request spans several rows, state the integration boundary and load each relevant reference in dependency order: project/build, platform/source sets, implementation layer, tests, then publication or migration.
 
 ## Select the target deliberately
 
-Do not choose a platform merely because a code sample compiles. Ask what must run where, which existing libraries are required, whether UI is shared, whether JavaScript or native interoperability is needed, and what release/stability constraints apply. Verify the current target-support and compatibility pages before making a production recommendation because platform maturity and target names change over time.
+Ask what must run where, which consumers and libraries are required, whether UI is shared, which host tools are available, and what compatibility or release policy applies. Verify current target support and compatibility instead of relying on memory.
 
-Use the following default routing:
-
-| Need | Prefer | Main constraint to check |
+| Need | Default route | Check |
 | --- | --- | --- |
-| Java ecosystem, server, desktop, Android tooling, or JVM libraries | Kotlin/JVM | JDK version, Java interop, bytecode/API level, framework plugins |
-| Browser or Node.js integration with the JavaScript ecosystem | Kotlin/JS | npm interop, module format, bundling, browser compatibility, dynamic types |
-| Shared UI or web delivery through WebAssembly | Kotlin/Wasm with Compose Multiplatform when appropriate | Browser Wasm capabilities, `wasm-js`, binary/runtime constraints |
-| Self-contained native binaries or Apple/C/Objective-C/Swift integration | Kotlin/Native | Host toolchains, Apple SDK/Xcode, target, linker, ABI and exported symbols |
-| Shared business logic, libraries, or UI across targets | Kotlin Multiplatform | Source-set graph, `commonMain` API availability, platform-specific dependencies |
-| JVM/Android/Apple/desktop UI reuse | Compose Multiplatform where supported | Framework target stability, UI/platform gaps, packaging and native tooling |
+| Java ecosystem, server, desktop, Android tooling, or JVM libraries | Kotlin/JVM | JDK/toolchain, Java interop, bytecode/API level, framework plugins |
+| Browser or Node.js ecosystem | Kotlin/JS | npm interop, module format, bundling, browser/Node support |
+| WebAssembly delivery or Compose web | Kotlin/Wasm `wasm-js` when appropriate | Browser features, JS/Wasm interop, binary size, startup |
+| Self-contained binaries or C/Objective-C/Swift | Kotlin/Native | Host SDK, target, architecture, linker, ABI, exported API |
+| Shared logic or libraries | Kotlin Multiplatform | Source-set graph, dependency variants, common API availability |
+| Shared UI | Compose Multiplatform only when target and UX constraints fit | Lifecycle, accessibility, resources, packaging, platform gaps |
 
-Treat stability labels as time-sensitive metadata. Quote the current official status when it materially affects a recommendation, and separate **core Kotlin Multiplatform stability** from **Compose Multiplatform UI stability**.
+Treat stability labels and compatibility tables as time-sensitive. Separate Kotlin/KMP stability from Compose UI stability and cite the current official source when the distinction affects a recommendation.
 
-## Apply the implementation workflow
+## Follow the implementation workflow
 
-1. **Inspect the project.** Read `settings.gradle(.kts)`, root and module build files, version catalogs, source-set declarations, compiler options, test configuration, and relevant documentation. Preserve the project’s existing Kotlin, Gradle, Java, Android, and toolchain versions unless the user asks for an upgrade.
-2. **Map the compilation boundary.** For a single-target project, identify the target and runtime. For multiplatform projects, map `commonMain`, `commonTest`, intermediate source sets, and platform source sets. Keep common code restricted to APIs available to every consumer source set.
-3. **Choose the narrowest compatible API.** Prefer standard-library and multiplatform APIs in shared code. Isolate platform APIs behind interfaces, `expect`/`actual`, dependency injection, or explicit adapters. Avoid accidental JVM-only types in common code.
-4. **Implement idiomatic Kotlin.** Prefer immutable data, null-safety, sealed hierarchies for closed states, extension functions when they clarify ownership, structured concurrency where coroutines are present, and explicit visibility for public APIs. Match the repository’s existing style rather than applying a blanket rewrite.
-5. **Handle interoperability explicitly.** Document nullability, naming, generics, exceptions, threading, memory ownership, callbacks, and generated bindings at JavaScript, JVM, C, Objective-C, Swift, and platform boundaries. Do not assume behavior is identical across backends.
-6. **Build the smallest useful target.** Run the module or target task first, then the relevant integration or packaging task. For compiler/repository work, use the exact subsystem task and test data workflow rather than only a top-level build.
-7. **Test the behavior and the boundary.** Add or update unit, common, platform, integration, compiler diagnostic, or golden tests according to the affected area. Include at least one test for platform-specific behavior and one for failure or compatibility behavior when relevant.
-8. **Inspect the result.** Check compiler warnings, generated sources, binary or bundle outputs, API compatibility, source maps or exported symbols, and dependency resolution. Report commands run, results, remaining environment limitations, and any unverified target.
+1. **Inspect the project.** Read the wrapper, settings, root/module build files, version catalogs, local guidance, source sets, compiler options, test configuration, and relevant documentation. Preserve declared versions unless the user requests a migration.
+2. **Run project inspection.** Use `scripts/inspect_kotlin_project.py <path> --format md` to gather heuristic evidence about build files, targets, source sets, compiler options, and source directories. Use `scripts/find_kotlin_guidance.py <path>` before repository edits.
+3. **Map compilation boundaries.** Identify target/runtime, `commonMain`, intermediate sets, platform sets, generated sources, and consumer artifacts. Keep common code limited to APIs available to all consumers.
+4. **Choose the narrowest compatible API.** Put platform APIs behind source-set boundaries, interfaces, dependency injection, or a small `expect`/`actual` seam. Check published variants before adding a dependency to shared code.
+5. **Implement idiomatic Kotlin.** Prefer immutable state, explicit nullability, narrow visibility, sealed states, structured concurrency, deterministic serialization, and APIs whose Java/Swift/JS/native behavior is intentional.
+6. **Handle interop explicitly.** Review nullability, naming, generics, exceptions, callbacks, threading, memory ownership, generated names, and platform object lifetimes at every boundary.
+7. **Build the smallest target.** Run the narrowest compile/test task, then the relevant integration, packaging, publication, or downstream-consumer task. For compiler work, use the area-specific harness.
+8. **Test behavior and boundary.** Add common, platform, integration, compiler, golden, fixture, API, binary, or performance tests according to the affected layer. Include failure, cancellation, compatibility, and target-specific behavior where relevant.
+9. **Inspect artifacts.** Check diagnostics, generated sources, bytecode, bundles, Wasm output, native headers/symbols, manifests/resources, publications, API dumps, dependency metadata, and warnings.
+10. **Report evidence.** Use [diagnostic-report.md](templates/diagnostic-report.md) for troubleshooting. State exact commands, results, skipped targets, environment limitations, and public/dependency/generated-file impact.
 
-## Build and diagnose safely
-
-Use the project’s wrapper and declared versions. For ordinary Kotlin projects, prefer the project’s `./gradlew` or `gradlew` tasks. For the JetBrains Kotlin repository, the documented high-value tasks include `clean`, `dist`, `install`, `coreLibsTest`, `gradlePluginTest`, and `compilerTest`; use `-Pteamcity=true` only when reproducing the CI build. Some Maven-plugin artifacts use Maven-specific instructions, and Kotlin/Native has additional source-build requirements. See [build-and-tooling.md](references/build-and-tooling.md).
-
-When a build fails, classify the failure before changing code:
+## Diagnose by layer
 
 | Symptom | Investigate first |
 | --- | --- |
-| Unresolved dependency or verification failure | Repositories, version catalog, lockfiles, Gradle verification metadata, and offline/cache state |
-| Wrong target or unavailable API | Source-set placement, target declaration, language/API version, and platform-specific dependency |
-| Compiler crash or diagnostic regression | Minimal reproducer, compiler phase, FIR/IR/backend, and the appropriate compiler test harness |
-| Native linker or framework failure | Host SDK, target, linker flags, exported declarations, C/Objective-C/Swift headers, and architecture |
-| JS bundle/runtime failure | Module kind, npm package, generated bundle, browser/Node environment, and interop declarations |
-| Wasm runtime or browser failure | `wasm-js` versus WASI, browser Wasm feature support, generated artifacts, and JS/Wasm boundary |
-| Test discovery or generated-test failure | Test source set, generated test classes, test directives, and the area-specific test instructions |
+| Plugin or dependency resolution | Repositories, versions, attributes, variants, verification, cache, and wrapper |
+| Wrong target or unavailable API | Source-set placement, target declaration, language/API version, host support |
+| JVM target incompatibility | Java toolchain, Kotlin `jvmTarget`, Java `targetCompatibility`, task overrides |
+| Compiler crash or diagnostic regression | Minimal reproducer, frontend/IR/backend phase, directives, test harness |
+| Native linker/framework failure | Host SDK, architecture, headers, symbols, linker flags, exported declarations |
+| JS/Wasm runtime failure | Module format, generated bundle/artifact, npm/runtime, browser/WASI features |
+| Android release-only failure | Variants, shrinking, resources, manifest merge, reflection/serialization, consumer rules |
+| Test discovery/generated-test failure | Source set, runner generation, directives, filters, local testing instructions |
+| Publication or downstream failure | Root/target publications, metadata, POM, signing, credentials, clean consumer |
+| IDE/analysis failure | PSI versus Analysis API, session lifetime, indexing, project model, IDE version |
 
-Do not “fix” a dependency-verification error by deleting metadata or disabling verification without understanding the change. Do not edit generated test files directly; regenerate them through the project’s documented task.
+Do not delete dependency verification, suppress JVM-target validation, bypass signing, or edit generated runners as a first fix. Understand the evidence and update the source input or configuration at the correct layer.
 
 ## Work in the JetBrains Kotlin repository
 
-Use `https://github.com/JetBrains/kotlin` as the repository map. The repository includes compiler, analysis, IR, JVM/JS/Wasm/Native backends, standard library and reflection, test infrastructure, Gradle/Maven/JPS/build tooling, compiler plugins, scripting, and related libraries. The IntelliJ Kotlin plugin source is maintained in the separate `JetBrains/intellij-community` repository; do not claim it is inside this repository.
+Before editing `JetBrains/kotlin`, read root and nearest local `AGENTS.md`, `CLAUDE.md`, README, testing guide, and build instructions. Use [repository-areas-deep.md](references/repository-areas-deep.md) to route `analysis`, `annotations`, `benchmarks`, `build-common`, `compiler`, `core`, `dependencies`, `generators`, `idea`, `jps`, `js`, `kotlin-native`, `libraries`, `native`, `plugins`, `scripts`, `spec-docs`, `test-instrumenter`, `tests`, and `wasm`. Follow local guidance over this summary.
 
-Before changing repository code, identify the area and read its local `AGENTS.md`, `CLAUDE.md`, or linked documentation. At minimum, distinguish Analysis API, FIR/K2, PSI, IR, JVM/JS/Wasm/Native backends, Kotlin Gradle Plugin, standard library, compiler tests, and build tools. Follow the repository’s local instructions over this skill when they are more specific. For detailed area routing, see [repository-contribution.md](references/repository-contribution.md).
+Find neighboring implementations and tests before introducing a new abstraction. Treat generated test runners, API dumps, source bindings, resource indexes, and verification metadata as derived unless local policy says otherwise. Use the repository’s documented Gradle tasks, focused test filters, and generator commands. The full Kotlin IntelliJ plugin is associated with `JetBrains/intellij-community`; confirm repository ownership before changing IDE plugin code.
 
-## Produce useful answers
+## Use bundled templates carefully
 
-For code-generation requests, provide complete files or focused patches with the required imports, build configuration, target declaration, and test commands. For troubleshooting, state the likely layer, the evidence, the smallest next diagnostic, and the minimal fix. For architecture questions, distinguish common code from platform code and explain the trade-offs. For repository work, include the exact area, test harness, generated-file policy, and validation status.
+Adapt [KMP library build template](templates/kmp-library/build.gradle.kts) only after checking current plugin and target syntax. Use [compiler regression template](templates/compiler-regression.kt) only inside the repository’s established test-data conventions. Use [diagnostic report](templates/diagnostic-report.md) to keep troubleshooting evidence complete. Templates contain placeholders and are not guaranteed drop-in code.
 
-Never invent a current Kotlin version, target stability level, compiler flag, Gradle task, or platform limitation. If the answer depends on a moving target, inspect the project files or current official documentation first. Preserve user code and configuration unless a change is necessary and explain any version-sensitive assumption.
+## Produce high-quality answers
+
+For code requests, provide complete files or focused patches with imports, build configuration, target declarations, and tests. For architecture, distinguish common, intermediate, and platform code and explain trade-offs. For migration, list versions crossed, deprecations, replacement APIs, tests, and rollback. For repository work, include area, harness, generated-file policy, dependency/API impact, and validation status.
+
+Never invent a current Kotlin version, target stability, compiler flag, task, or platform limitation. Inspect project files or current official documentation when facts are moving. Preserve user configuration unless a change is necessary and explain version-sensitive assumptions.
 
 ## Primary references
 
 [1] [JetBrains Kotlin repository](https://github.com/JetBrains/kotlin)
 
-[2] [Kotlin Multiplatform supported-platform stability](https://kotlinlang.org/docs/multiplatform/supported-platforms.html)
+[2] [Kotlin documentation](https://kotlinlang.org/docs/home.html)
 
-[3] [Kotlin/JavaScript overview](https://kotlinlang.org/docs/js-overview.html)
+[3] [Kotlin Gradle configuration](https://kotlinlang.org/docs/gradle-configure-project.html)
 
-[4] [Kotlin/Wasm overview](https://kotlinlang.org/docs/wasm-overview.html)
+[4] [Kotlin Multiplatform compatibility](https://kotlinlang.org/docs/multiplatform/multiplatform-compatibility-guide.html)
 
-[5] [Kotlin/Native overview](https://kotlinlang.org/docs/native-overview.html)
+[5] [Kotlin Multiplatform publishing](https://kotlinlang.org/docs/multiplatform/multiplatform-publish-lib-setup.html)
 
-[6] [Kotlin Multiplatform project structure](https://kotlinlang.org/docs/multiplatform/multiplatform-discover-project.html)
-
-[7] [Kotlin compiler and plugins documentation](https://kotlinlang.org/docs/compiler-reference.html)
+[6] [Kotlin compiler reference](https://kotlinlang.org/docs/compiler-reference.html)
