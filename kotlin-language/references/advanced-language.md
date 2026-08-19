@@ -12,13 +12,13 @@ Treat contracts, context receivers or successor mechanisms, explicit backing fie
 
 Define coroutine ownership, scope, dispatcher, cancellation, exception supervision, backpressure, and lifecycle. Prefer structured concurrency and inject dispatchers or contexts at boundaries. Keep blocking I/O out of suspending code unless it is isolated on an appropriate dispatcher. Test cancellation, timeout, retry, exception propagation, and concurrent access.
 
-For `Flow`, decide whether the stream is cold or hot, how collection is scoped, whether buffering or conflation is safe, and whether errors are represented as exceptions or values. Avoid accidental multiple subscriptions, leaked scopes, and unbounded buffers. In multiplatform code, keep platform dispatchers and lifecycle adapters out of `commonMain`.
+For `Flow`, decide whether the stream is cold or hot, how collection is scoped, whether buffering or conflation is safe, and whether errors are represented as exceptions or values. Avoid accidental multiple subscriptions, leaked scopes, and unbounded buffers. In multiplatform code, keep platform dispatchers and lifecycle adapters out of `commonMain`. Use `flow-reactive-state.md` for the complete operator, lifecycle, testing, and KMP checklist.
 
 ## Serialization and data boundaries
 
 Choose a serialization mechanism that supports every target and version policy. Treat serialized names, default values, unknown fields, polymorphism, schema evolution, binary formats, and generated serializers as compatibility contracts. Add golden or round-trip tests for public payloads and test malformed input separately.
 
-Do not use reflection-based serialization in a target where it is unavailable or too expensive. When code generation is involved, make generation deterministic and verify generated sources in CI or through the repository’s required workflow.
+Do not use reflection-based serialization in a target where it is unavailable or too expensive. When code generation is involved, make generation deterministic and verify generated sources in CI or through the repository’s required workflow. For untrusted JSON, network input, polymorphism, bounds, or semantic validation, load `input-safety.md`.
 
 ## Common ecosystem routing
 
@@ -35,7 +35,7 @@ Do not add a library only because it is popular on JVM. Check published variants
 
 ## Performance
 
-Measure before optimizing. Inspect allocation, boxing, inline behavior, collection materialization, sequence overhead, coroutine scheduling, serialization, startup, binary size, and platform-specific runtime costs. Use platform profilers and repository benchmarks where available. Avoid micro-optimizations that reduce API clarity without evidence.
+Measure before optimizing. Inspect allocation, boxing, inline behavior, collection materialization, sequence overhead, coroutine scheduling, serialization, startup, binary size, and platform-specific runtime costs. Use `benchmarking.md` for `kotlinx-benchmark`, JMH, baselines, warmup, validity, and platform routing. Avoid micro-optimizations that reduce API clarity without evidence.
 
 ## Public API design
 

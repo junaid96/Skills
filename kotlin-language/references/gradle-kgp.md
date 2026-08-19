@@ -31,11 +31,15 @@ Use the project’s actual version and toolchain. Avoid blindly copying deprecat
 
 Declare a dependency in the narrowest source set that needs it. Inspect the published variants before assuming a library supports a target. Use intermediate source sets for a stable subset of targets, and avoid multiple similar targets in one project unless the attribute and source-set complexity is justified.
 
-When dependency resolution fails, inspect Gradle attributes, capabilities, target variants, repositories, metadata, version catalogs, substitution rules, and verification metadata. A dependency that resolves on JVM may not publish a Native, JS, Wasm, or common variant.
+When dependency resolution fails, inspect Gradle attributes, capabilities, target variants, repositories, metadata, version catalogs, substitution rules, and verification metadata. A dependency that resolves on JVM may not publish a Native, JS, Wasm, or common variant. For provenance, repository trust, lockfiles, checksums, signatures, typosquatting, dependency confusion, suspicious transitive artifacts, plugins, KSP, or kapt, load `dependency-provenance.md`.
 
 ## Convention plugins and build logic
 
 Put reusable project policy in convention plugins or included build logic when the repository already uses them. Keep application-specific configuration in the module. Test convention plugins with a minimal fixture project and a Gradle TestKit or repository-approved integration harness. Avoid using `afterEvaluate` or global task mutation when lazy configuration can express the same policy.
+
+## Dependency and plugin trust boundary
+
+Build correctness is not supply-chain security. Keep repository declarations minimal and approved, preserve lockfiles and dependency verification metadata, verify artifact identity and origin, and review new transitive dependencies, plugins, processors, scripts, and native binaries. Do not disable verification or silently substitute versions to make resolution succeed. Use `dependency-provenance.md` for the detailed security-engineering workflow; route broader threat modeling and incident response to Security + Privacy.
 
 ## Task and performance discipline
 

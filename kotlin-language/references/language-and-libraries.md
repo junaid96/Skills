@@ -18,7 +18,7 @@ Prefer the Kotlin standard library and project-approved multiplatform libraries 
 
 When using collections, sequences, delegated properties, ranges, regexes, I/O, time, or reflection, measure whether the abstraction is appropriate for the target and workload. Do not assume JVM allocation, threading, file-system, or reflection behavior applies to JS, Wasm, or Native.
 
-For `kotlin-reflect`, verify that the artifact and reflection behavior are available on the target. For serialization or code generation, treat generated code and plugin configuration as part of the build contract and include regeneration or validation in the workflow.
+For `kotlin-reflect`, verify that the artifact and reflection behavior are available on the target. For serialization or code generation, treat generated code and plugin configuration as part of the build contract and include regeneration or validation in the workflow. For untrusted JSON, network input, polymorphic deserialization, bounds, and semantic validation, load `input-safety.md`.
 
 ## Reflection and scripting
 
@@ -47,7 +47,7 @@ Before changing a public library API, inspect source compatibility, binary compa
 
 ## Code review checklist
 
-Review imports and visibility, nullability, allocations, coroutine scope, exception behavior, public API surface, target availability, source-set placement, generated code, test coverage, diagnostics, and documentation. Prefer a small patch that preserves local conventions. Call out any recommendation that depends on a specific Kotlin, Gradle, JDK, Android, browser, or native toolchain version.
+Review imports and visibility, nullability, allocations, coroutine scope, exception behavior, public API surface, target availability, source-set placement, generated code, test coverage, diagnostics, and documentation. For performance claims, load `benchmarking.md` and require a baseline, repeatable workload, and valid measurement. Prefer a small patch that preserves local conventions. Call out any recommendation that depends on a specific Kotlin, Gradle, JDK, Android, browser, or native toolchain version.
 
 ## Official references
 

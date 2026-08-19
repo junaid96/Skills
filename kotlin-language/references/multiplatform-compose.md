@@ -6,6 +6,10 @@ Read this file for shared code architecture, source-set graphs, `expect`/`actual
 
 Share stable domain logic, data models, validation, serialization contracts, networking abstractions, and deterministic state machines first. Share UI only when the supported targets, interaction model, accessibility requirements, resource system, and platform conventions justify it. Keep permissions, notifications, lifecycle, windowing, navigation integration, storage, and platform services behind explicit adapters.
 
+## HealthOS-compatible architecture boundary
+
+For a HealthOS-style KMP application, keep shared domain rules, data contracts, validation, serialization models, repository interfaces, deterministic state machines, and portable presentation state in common code where the targets support them. Keep Android/iOS permissions, Health Connect or HealthKit access, notifications, background execution, storage engines, lifecycle, system UI, and platform navigation behind explicit adapters owned by the responsible platform skill. Compose Multiplatform shared UI is appropriate only where target behavior, accessibility, input, resources, and release packaging are verified on every supported target. This section is an architecture boundary, not health-domain or product guidance.
+
 ## Source-set architecture
 
 Model the graph before editing:
