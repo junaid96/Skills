@@ -48,14 +48,15 @@
 | Health provenance persistence | `SKILL.md`; `cross-skill-boundaries.md` | Yes | Yes | Yes | Yes | Yes |
 | KMP platform boundaries | `room-kmp.md`; `cross-skill-boundaries.md` | Yes | Yes | Yes | Yes | Yes |
 | Specialist routing | `cross-skill-boundaries.md` | Yes | Yes | Yes | Yes | Yes |
-| Currentness protocol | `SKILL.md`; `research-notes.md` | Yes | Yes | Yes | Yes | Yes |
-| Source links | All references; `research-notes.md` | Yes | Yes | Yes | Yes | Yes |
+| Current official sources / currentness protocol | `references/sources.md` | Yes | Yes | Yes | Yes | Yes |
+| Historical research notes | `references/research-notes.md` | Yes | Yes | Yes | Yes | Yes |
+| Source links | `references/sources.md`; technical references | Yes | Yes | Yes | Yes | Yes |
 | Reference routing | `SKILL.md` navigation | Yes | Yes | Yes | Yes | Yes |
 | Structural validation | `quick_validate.py`; local structural validator; 145-line core | Yes | Yes | Yes | Yes | Yes |
-| Adversarial validation | `database-offline-first-adversarial-second-pass-audit.md`; 51 scenarios | Yes | Yes | Yes | Yes | Yes |
+| Adversarial validation | `database-offline-first-adversarial-second-pass-audit.md`; 52 scenarios | Yes | Yes | Yes | Yes | Yes |
 | Independent second pass | Marker, secret, PHI-fixture, stale-claim, parity, and source-link scans | Yes | Yes | Yes | Yes | Yes |
-| GitHub persistence | `junaid96/Skills` `main`; commit `d0159f8f08e07643a245c47c38aa99a8bea210d2`; remote SHA verified | Yes | Yes | Yes | Yes | Yes |
+| GitHub persistence | `junaid96/Skills` `main`; final commit recorded after validation | Yes | Yes | Yes | Yes | Yes |
 
 ## Interpretation
 
-All content, validation, and persistence rows are complete at the package-design level and are backed by current official sources checked on the date above. Structural validation, source-link checks, adversarial coverage, second-pass scans, package parity, commit, push, and exact remote-SHA verification have passed. The package remains guidance; consuming applications must execute the listed tests before claiming application-level production readiness.
+All content, validation, and persistence rows are complete at the package-design level and are backed by current official sources checked on the date above. The authoritative currentness owner is `references/sources.md`; `research-notes.md` is retained as historical context. Structural validation, source-link checks, 52-scenario adversarial coverage, second-pass scans, package parity, commit, push, and exact remote-SHA verification must be rerun after this final structural change. The package remains guidance; consuming applications must execute the listed tests before claiming application-level production readiness.

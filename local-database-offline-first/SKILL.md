@@ -118,11 +118,12 @@ Read only the references needed for the current task:
 - [cross-skill-boundaries.md](references/cross-skill-boundaries.md): HealthOS provenance boundary, platform ownership, specialist routing, and privacy delegation.
 - [database-offline-first-completeness-matrix.md](references/database-offline-first-completeness-matrix.md): evidence-based requirement coverage.
 - [database-offline-first-adversarial-second-pass-audit.md](references/database-offline-first-adversarial-second-pass-audit.md): 51 production failure scenarios and required evidence.
-- [research-notes.md](references/research-notes.md): official sources reviewed and currentness notes; update the check date before future version-sensitive work.
+- [sources.md](references/sources.md): authoritative source hierarchy, currentness protocol, conflict protocol, evidence protocol, and official source catalog. Route all version-sensitive/source questions here.
+- [research-notes.md](references/research-notes.md): historical investigation notes and findings preserved from the revision process; not the authoritative currentness protocol.
 
 ## Currentness protocol
 
-Before implementation, check official documentation for Room Multiplatform, Room-to-KMP migration, Room migrations/testing, SQLite KMP, Android offline-first, Paging, DataStore when relevant, official SQLite behavior, Kotlin/KMP compatibility, and current Gradle/KSP compatibility. Record the date, URLs, versions actually resolved by the project, and any unsupported target/API. Do not hard-code volatile version claims.
+Route source hierarchy, version-sensitive decisions, disagreement resolution, evidence recording, and official source verification to [sources.md](references/sources.md). Before implementation, inspect the actual project/toolchain versions and resolved dependencies; consult current official documentation; verify compatibility by build, test, or reproducible probe where possible; and record the documentation-check date, relevant versions, applicable platform, evidence, and unresolved limitations. Do not hard-code volatile version claims.
 
 ## References
 

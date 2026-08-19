@@ -55,7 +55,8 @@
 | 49 | Network response before DB write | Repository/network | offline-first | Validate → map → transaction → DB → Flow; never direct UI bypass. | Repository integration test. | DTO/domain/entity boundaries. | Official data-layer guidance checked. | PASS: guided |
 | 50 | CI/schema mismatch | Build/CI/database | testing-migrations | Fail build or test when exported schema and code diverge. | CI schema validation. | KSP/Gradle ownership coordinated. | Resolved versions recorded. | PASS: guided |
 | 51 | Room/Kotlin/Gradle compatibility | Build/KMP | room-kmp | Verify current compatibility and avoid hard-coded volatile versions. | Build matrix and source links. | Target-specific toolchain boundary. | Official release docs checked. | PASS: guided |
+| 52 | Room/KMP dependency or migration behavior changes between project versions | Build/KMP/database | sources; room-kmp | Inspect project versions, consult current official documentation, verify compatibility, record version/source evidence, and do not apply stale guidance. | Resolved dependency report, current source URLs/date, compatibility build or reproducible probe, and documented limitation. | Version-specific behavior remains isolated from common architecture claims. | Currentness protocol and official source catalog verified. | PASS: guided |
 
 ## Second-pass conclusion
 
-No package-guidance `FAIL` or `PARTIAL` remains in the 51 scenarios. The result is **PASS: guidance present** for the skill package. A consuming application must run the evidence tests and replace the package-level result with executable evidence before claiming production readiness.
+No package-guidance `FAIL` or `PARTIAL` remains in the 52 scenarios. The result is **PASS: guidance present** for the skill package. A consuming application must run the evidence tests and replace the package-level result with executable evidence before claiming production readiness.
