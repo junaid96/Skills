@@ -60,9 +60,9 @@ OpenAI's documentation page lists current guide links and Markdown twins. Prefer
 
 - [WHO: Ethics and governance of artificial intelligence for health](https://www.who.int/publications/i/item/9789240029200) for general health-AI governance.
 - [WHO: Ethics and governance of artificial intelligence for health—large multi-modal models](https://www.who.int/publications/i/item/9789240084759) for generative and multimodal health-AI risks and recommendations.
-- [FDA: Artificial intelligence-enabled medical devices](https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-enabled-medical-devices) for U.S. medical-device context.
-- [FDA: Clinical Decision Support Software FAQs](https://www.fda.gov/medical-devices/software-medical-device-samd/clinical-decision-support-software-frequently-asked-questions-faqs) for current CDS framing.
-- [FDA: Good Machine Learning Practice guiding principles](https://www.fda.gov/medical-devices/software-medical-device-samd/good-machine-learning-practice-medical-device-development-guiding-principles) for ML-enabled medical-device development practices.
+- [FDA: Artificial Intelligence in Software as a Medical Device](https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-software-medical-device) for U.S. medical-device context.
+- [FDA: Clinical Decision Support Software guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software) for current CDS framing.
+- [FDA/IMDRF: Good Machine Learning Practice guiding principles](https://www.fda.gov/media/153486/download) for ML-enabled medical-device development practices.
 - [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) and [NIST Generative AI Profile](https://doi.org/10.6028/NIST.AI.600-1) for lifecycle risk management and generative-AI risks.
 
 These sources inform engineering controls but do not determine the legal or regulatory classification of a specific HealthOS feature. Consult the responsible Health / Medical Domain, Security + Privacy, and compliance owners.

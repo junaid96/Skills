@@ -18,6 +18,10 @@ HealthOS AI contract
 
 The provider-neutral contract should represent request intent, approved data class, model capability requirements, typed content parts, structured output expectations, tool requests, citations, usage, refusal or insufficiency, cancellation, and normalized error classes. Keep provider request/response objects, credentials, SDK clients, and vendor-specific retry semantics behind the adapter.
 
+## Provider composition and configuration
+
+Compose the AI subsystem from explicit, versioned configuration rather than provider-specific conditionals scattered through product code. A deployment configuration should select the adapter, model/deployment, region, capability snapshot, data-class eligibility, policy profile, timeout/retry class, budget class, evaluation baseline, and fallback policy. Keep composition at the application/service boundary; do not let UI, shared domain, memory records, or deterministic health services depend on provider SDK types. Test configuration resolution separately from model behavior, reject configurations whose declared capability or privacy requirements are unsupported, and make every configuration change a versioned behavioral change subject to evaluation, canary, monitoring, and rollback.
+
 ## Capability registry
 
 Maintain a versioned registry for every approved provider/model/deployment combination. Do not infer capabilities from model names or from another provider. Volatile values must be re-verified from current official documentation at implementation and upgrade time; the registry is a controlled snapshot, not permanent truth.

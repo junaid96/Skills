@@ -72,6 +72,10 @@ This audit is a design-level adversarial review of the integrated skill package.
 | A64 | Health platform sends unauthorized data to AI | Platform + AI | Data-class and purpose checks | Minimize, authorize, and block unneeded fields | HealthKit/Health Connect/Wearables | Data-flow review | PASS |
 | A65 | AI guidance duplicates backend/security/QA ownership | HealthOS AI Engineering | `boundaries.md` | Keep interface-only guidance; delegate implementation | Named specialist boundary | Duplicate scan | PASS |
 | A66 | Official source, placeholder, secret, or orphan reference fails validation | AI + DevOps | `sources.md`, package audit | Fix link/file or fail release; no silent omission | CI/CD + DevOps | Structural/link/secret audit | PASS |
+| A67 | Versioned provider composition selects an adapter without a required capability | AI + DevOps | Composition configuration and capability registry | Reject configuration before serving traffic; route only to an evaluated capable adapter or return insufficiency | AI contract; no provider SDK leakage | Configuration-resolution test and capability snapshot | PASS |
+| A68 | Provider configuration violates PHI eligibility, region, or privacy policy | Privacy + AI | Data-class, region, and eligibility gates | Block the route; do not silently downgrade to an unapproved provider or region | Security + Privacy | Route-policy test with synthetic PHI classification | PASS |
+| A69 | UI renders an interrupted stream as a completed health answer | AI + UI/UX | Stream state machine and incomplete-result contract | Display incomplete/cancelled state, suppress unsafe action, and require re-request or approved recovery | UI/UX + Design System; Health / Medical Domain | Interrupted-stream UI test | PASS |
+| A70 | Completeness matrix marks a heading complete without evidence or verification | AI + DevOps | Evidence-gated completeness matrix | Mark partial/failed and block final acceptance until substantive evidence and verification exist | AI / LLM Engineering | Matrix schema validation and independent review | PASS |
 
 ## Second-pass independent review
 
@@ -87,7 +91,8 @@ A second-pass reviewer should inspect the package without relying on the initial
 | Completeness and adversarial evidence was not previously recorded as auditable artifacts. | Fixed with this audit, the completeness matrix, and the attachment classification. |
 | Core router risked becoming a second long reference document. | Fixed by keeping `SKILL.md` as a 91-line router and moving detail to focused references. |
 | No contradictory attachment requirement was found. | Recorded in `attachment-classification.md`; preserve provider-neutral reuse while applying HealthOS overlays. |
+| Later instruction documents introduced explicit provider composition/configuration, exact UI/UX and iOS boundary aliases, and richer completeness evidence fields. | Added targeted composition guidance, boundary aliases, the expanded matrix schema, and scenarios A67–A70; no duplicate micro-skill was created. |
 
 ## Independent second-pass conclusion
 
-No known requirement gaps remain in the integrated skill package at the documentation and architecture-control level. Product-specific implementation, contractual approval, clinical validation, runtime testing, and deployment evidence remain mandatory before any HealthOS feature is treated as production-ready.
+The audit now contains 70 production-grade scenarios, all marked PASS. No known requirement gaps remain in the integrated skill package at the documentation and architecture-control level. Product-specific implementation, contractual approval, clinical validation, runtime testing, and deployment evidence remain mandatory before any HealthOS feature is treated as production-ready.
