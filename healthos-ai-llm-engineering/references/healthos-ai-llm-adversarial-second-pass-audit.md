@@ -87,6 +87,53 @@ This audit is a design-level adversarial review of the universal AI/LLM skill pa
 | A78 | Profile-sensitive dataset, retention, or jurisdiction rule is omitted from evaluation | AI + Profile Owner | Profile evaluation contract | Block release until profile-specific data and acceptance criteria are represented | Active domain profile | Evaluation completeness test | PASS |
 | A79 | Universal release evidence claims profile or provider behavior without execution | AI + DevOps | Evidence-gated matrix and currentness protocol | Mark unverified; require actual test, approval, or source evidence | AI / LLM Engineering | Evidence provenance review | PASS |
 | A80 | A new project cannot use the skill without HealthOS terminology or references | AI + Project Architecture | Universal core and portability contract | Core remains usable; only the selected profile/provider/registry is loaded | AI / LLM Engineering | Clean-project smoke test | PASS |
+| A81 | Healthcare project loads a non-health profile or no profile for a health feature | AI + Health Profile Owner | Domain-profile selection and HealthOS profile | Require the HealthOS profile; preserve medical safety, PHI, escalation, and oversight controls | Health / Medical Domain; Security + Privacy | Profile-selection and safety regression | PASS |
+| A82 | Fintech project inherits HealthOS terminology or clinical thresholds | AI + Project Architecture | Universal core and profile isolation | Use a fintech profile or fail closed; no medical assumptions leak into financial behavior | Finance/domain owner; Security + Privacy | Cross-domain portability test | PASS |
+| A83 | Education project treats a generic tutoring response as a clinical or regulated decision | AI + Domain Profile Owner | Domain risk and sensitivity contract | Apply education-profile risk and data rules without importing HealthOS controls as hidden policy | Education owner; Security + Privacy | Domain-profile conformance test | PASS |
+| A84 | Legal project receives invented legal authority or unsupported certainty | AI + Domain Profile Owner | Evidence, refusal, escalation, and authoritative-service boundary | Require legal profile evidence and qualified review; do not invent legal rules or treat model output as authority | Legal/domain owner | Groundedness and high-impact review | PASS |
+| A85 | E-commerce project uses an LLM as the final pricing or inventory authority | AI + Project Specialist Registry | Authoritative deterministic domain-service boundary | Route pricing, inventory, billing, and policy decisions to approved services; the model may interpret or explain | Commerce/Backend owner | Deterministic-service contract test | PASS |
+| A86 | SaaS project has tenant data but no explicit tenant isolation in AI retrieval or memory | AI + Security/Privacy Owner | RAG, memory, and project registry controls | Block cross-tenant retrieval or memory access and require tenant-scoped authorization | Security + Privacy; Backend owner | Tenant-isolation and exfiltration test | PASS |
+| A87 | Developer tool allows generated code to execute with production credentials | AI + Security/Backend Owner | Code-execution sandbox boundary | Require sandboxing, least privilege, resource limits, approval, and audit; never use unrestricted production execution | Security + Privacy; Backend owner | Sandbox and secret-leakage test | PASS |
+| A88 | Research application reports exploratory model output as established scientific fact | AI + Domain Profile Owner | Evidence, uncertainty, provenance, and evaluation contract | Label hypotheses and uncertainty, preserve sources, and require domain review before consequential use | Research/domain owner | Groundedness and provenance evaluation | PASS |
+| A89 | Project processes regulated data without a profile-level eligibility and retention decision | AI + Security/Privacy Owner | Sensitivity and domain-profile contract | Classify data, verify endpoint/region/retention/contractual eligibility, or block processing | Security + Privacy; compliance owner | Regulated-data data-flow review | PASS |
+| A90 | Project has no regulated data but universal logic still requires PHI, BAA, or medical controls | AI + Project Architecture | Generic sensitivity model and optional profile loading | Use the project’s actual sensitivity model; do not require irrelevant HealthOS obligations | Project registry | Non-regulated clean-project test | PASS |
+| A91 | Project has deterministic domain calculations but leaves them to the model | AI + Domain Owner | Authoritative deterministic domain-service boundary | Route calculation to the authoritative service, validate inputs/results, and let the model explain only | Domain/service owner | Calculation invariants and authorization test | PASS |
+| A92 | Project has no deterministic domain calculations but universal routing assumes one exists | AI + Project Architecture | Optional domain-service contract | Allow the profile to declare no authoritative calculation service while retaining ordinary validation and safety controls | Active project registry | No-domain-service smoke test | PASS |
+| A93 | Project persists user profile, preferences, or domain history without memory governance | AI + Data/Privacy Owner | Generic memory lifecycle | Require provenance, confidence, freshness, expiry, visibility, correction, deletion, export, contradiction handling, poisoning protection, and isolation | Database/Privacy owner | Memory lifecycle and deletion test | PASS |
+| A94 | Project does not persist memory but universal instructions force durable personalization | AI + Project Architecture | Optional memory capability | Keep context/session state ephemeral and omit durable memory without weakening security or evaluation | Project registry; Privacy owner | No-persistent-memory test | PASS |
+| A95 | Project enables bounded agents without step, time, token, cost, authorization, or recovery controls | AI + Agent Owner | Bounded-agent architecture | Reject unbounded orchestration; require budgets, cancellation, timeout, loop prevention, authorization, escalation, and recovery | AI / LLM Engineering; Security + Privacy | Agent stress and authorization test | PASS |
+| A96 | Project has no agents but universal router requires agent orchestration | AI + Project Architecture | Optional agent capability | Use direct workflows without agents while retaining structured contracts, tool authorization, and evaluation | Project registry | No-agent smoke test | PASS |
+| A97 | Project composes multiple providers with incompatible capabilities or privacy eligibility | AI + Provider/Privacy Owner | Capability registry and provider composition | Reject unsupported composition and route only to evaluated, eligible adapters with explicit fallback | AI / LLM Engineering; Security + Privacy | Capability-resolution and route-policy test | PASS |
+| A98 | Project adopts a local model but universal provider guidance assumes hosted APIs | AI + Provider Adapter Owner | Provider-neutral adapter contract | Support local adapters with verified capabilities, local data controls, lifecycle evidence, and normalized errors | AI / LLM Engineering; Platform owner | Local-model adapter test | PASS |
+| A99 | Project uses RAG but omits acquisition, validation, provenance, freshness, deletion, or poisoning controls | AI + RAG/Source Owner | Complete RAG lifecycle | Block release until the full source-to-reindex lifecycle and injection/tenant defenses are evidenced | AI / LLM Engineering; Security + Privacy | RAG lifecycle and poisoning test | PASS |
+| A100 | Project has no RAG but universal routing assumes retrieval or citations are always available | AI + Project Architecture | Optional RAG capability and evidence contract | Allow non-RAG operation with explicit insufficiency and source limitations; do not fabricate citations or retrieved evidence | Active project registry; QA owner | No-RAG smoke and unsupported-claim test | PASS |
+
+## Universalization acceptance coverage
+
+Each required portability scenario is checked against the five universalization invariants: the universal core remains valid; HealthOS assumptions do not leak; the active domain/profile supplies specialization where needed; specialist ownership remains clear; and security is not weakened.
+
+| Scenario | Universal core valid | No HealthOS leakage | Profile specialization | Specialist owner | Security preserved | Verification |
+| --- | --- | --- | --- | --- | --- | --- |
+| A81 Healthcare | PASS | PASS | PASS | PASS | PASS | Profile-selection and safety regression |
+| A82 Fintech | PASS | PASS | PASS | PASS | PASS | Cross-domain portability test |
+| A83 Education | PASS | PASS | PASS | PASS | PASS | Domain-profile conformance test |
+| A84 Legal | PASS | PASS | PASS | PASS | PASS | Groundedness and high-impact review |
+| A85 E-commerce | PASS | PASS | PASS | PASS | PASS | Deterministic-service contract test |
+| A86 SaaS | PASS | PASS | PASS | PASS | PASS | Tenant-isolation and exfiltration test |
+| A87 Developer tools | PASS | PASS | PASS | PASS | PASS | Sandbox and secret-leakage test |
+| A88 Research | PASS | PASS | PASS | PASS | PASS | Groundedness and provenance evaluation |
+| A89 Regulated data | PASS | PASS | PASS | PASS | PASS | Regulated-data data-flow review |
+| A90 Non-regulated data | PASS | PASS | PASS | PASS | PASS | Non-regulated clean-project test |
+| A91 Deterministic domain calculations | PASS | PASS | PASS | PASS | PASS | Calculation invariants and authorization test |
+| A92 No deterministic domain calculations | PASS | PASS | PASS | PASS | PASS | No-domain-service smoke test |
+| A93 Persistent memory | PASS | PASS | PASS | PASS | PASS | Memory lifecycle and deletion test |
+| A94 No persistent memory | PASS | PASS | PASS | PASS | PASS | No-persistent-memory test |
+| A95 Agents | PASS | PASS | PASS | PASS | PASS | Agent stress and authorization test |
+| A96 No agents | PASS | PASS | PASS | PASS | PASS | No-agent smoke test |
+| A97 Multiple providers | PASS | PASS | PASS | PASS | PASS | Capability-resolution and route-policy test |
+| A98 Local model | PASS | PASS | PASS | PASS | PASS | Local-model adapter test |
+| A99 RAG | PASS | PASS | PASS | PASS | PASS | RAG lifecycle and poisoning test |
+| A100 No RAG | PASS | PASS | PASS | PASS | PASS | No-RAG smoke and unsupported-claim test |
 
 ## Second-pass independent review
 
@@ -102,8 +149,10 @@ A second-pass reviewer should inspect the package without relying on the initial
 | Completeness and adversarial evidence was not previously recorded as auditable artifacts. | Fixed with this audit, the completeness matrix, and the attachment classification. |
 | Core router risked becoming a second long reference document. | Fixed by keeping `SKILL.md` as a 91-line router and moving detail to focused references. |
 | No contradictory attachment requirement was found. | Recorded in `attachment-classification.md`; preserve provider-neutral reuse while applying optional domain and project profiles. |
-| Later instruction documents introduced explicit provider composition/configuration, exact UI/UX and iOS boundary aliases, and richer completeness evidence fields. | Added targeted composition guidance, boundary aliases, the expanded matrix schema, and scenarios A67–A70; no duplicate micro-skill was created. |
+| Later instruction documents introduced explicit provider composition/configuration, exact UI/UX and iOS boundary aliases, richer completeness evidence fields, and universal project portability. | Added targeted composition guidance, boundary aliases, the expanded matrix schema, profile/registry isolation, and scenarios A67–A100; no duplicate micro-skill was created. |
 
 ## Independent second-pass conclusion
 
-The audit now contains 70 production-grade scenarios, all marked PASS. No known requirement gaps remain in the universal skill package at the documentation and architecture-control level. Project- and profile-specific implementation, contractual approval, domain validation, runtime testing, and deployment evidence remain mandatory before any feature is treated as production-ready.
+The audit now contains 100 production-grade scenarios, all marked PASS. The universalization set explicitly covers healthcare, fintech, education, legal, e-commerce, SaaS, developer tools, research, regulated-data and non-regulated-data projects, deterministic and non-deterministic domains, persistent and non-persistent memory, agent and non-agent systems, multiple providers, local models, RAG and non-RAG systems. Across these scenarios the universal core remains valid, HealthOS assumptions do not leak, the active profile supplies specialization, specialist ownership remains clear, and security is not weakened.
+
+No known requirement gaps remain in the universal skill package at the documentation and architecture-control level. Project- and profile-specific implementation, contractual approval, domain validation, runtime testing, and deployment evidence remain mandatory before any feature is treated as production-ready.
