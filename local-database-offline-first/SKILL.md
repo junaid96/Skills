@@ -117,7 +117,7 @@ Read only the references needed for the current task:
 - [performance-retention.md](references/performance-retention.md): Paging, pagination, `EXPLAIN QUERY PLAN`, N+1 diagnosis, large datasets, retention, archival, vacuum, and storage monitoring.
 - [cross-skill-boundaries.md](references/cross-skill-boundaries.md): HealthOS provenance boundary, platform ownership, specialist routing, and privacy delegation.
 - [database-offline-first-completeness-matrix.md](references/database-offline-first-completeness-matrix.md): evidence-based requirement coverage.
-- [database-offline-first-adversarial-second-pass-audit.md](references/database-offline-first-adversarial-second-pass-audit.md): 51 production failure scenarios and required evidence.
+- [database-offline-first-adversarial-second-pass-audit.md](references/database-offline-first-adversarial-second-pass-audit.md): 52 production failure scenarios and required evidence.
 - [sources.md](references/sources.md): authoritative source hierarchy, currentness protocol, conflict protocol, evidence protocol, and official source catalog. Route all version-sensitive/source questions here.
 - [research-notes.md](references/research-notes.md): historical investigation notes and findings preserved from the revision process; not the authoritative currentness protocol.
 
