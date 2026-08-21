@@ -168,6 +168,6 @@ No material in `pasted_content_7.txt` was treated as out of scope. No new skill 
 | Provider Reference as a first-class matrix layer | MISSING CAPABILITY | Reclassified the OpenAI official API/developer-resources row as `PROVIDER REFERENCE` while preserving the 43 requirement families and evidence schema. |
 | HealthOS safety and domain controls | ALREADY COVERED | Preserved PHI, clinical, emergency, medication, health-calculation, multimodal, escalation, and HealthOS ownership controls behind the optional HealthOS profile. |
 | Documentation honesty and currentness | ENHANCEMENT | Updated validation evidence and retained documented/observed/verified/inferred/assumed distinctions and implementation-time volatile-fact checks. |
-| Audit, validation, and release requirements | ALREADY COVERED | Retained the A01–A100 audit, independent second pass, structural checks, source checks, secret/PHI scans, artifact hygiene, commit, push, and remote verification workflow. |
+| Audit, validation, and release requirements | ALREADY COVERED | Retained and extended the A01–A125 audit, independent second pass, structural checks, source checks, secret/PHI scans, artifact hygiene, commit, push, and remote verification workflow. |
 
 No contradictory or out-of-scope requirement was introduced. The existing skill remains the sole AI/LLM package; no overlapping micro-skill was created and no specialist ownership boundary was absorbed.
