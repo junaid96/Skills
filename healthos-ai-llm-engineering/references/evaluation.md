@@ -68,4 +68,4 @@ Do not claim runtime, provider, compliance, or safety behavior has been verified
 - [OpenAI model evaluations](https://developers.openai.com/api/docs/guides/evals)
 - [OpenAI safety in building agents](https://developers.openai.com/api/docs/guides/agent-builder-safety)
 - [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
-- [NIST Generative AI Profile](https://airc.nist.gov/docs/NIST.AI.600-1.GenAI-Profile.ipd.pdf)
+- [NIST Generative AI Profile](https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-generative-artificial-intelligence)

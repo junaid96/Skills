@@ -152,3 +152,22 @@ The resulting package is a **universal AI/LLM core with optional domain profiles
 | Scripts, templates, metadata, orphan files, TODO/FIXME, placeholders, secrets, PII/PHI, and broken links | ALREADY COVERED as validation requirements | Inspected through the final package audit; no unnecessary package artifacts or unresolved meaningful findings remain. |
 
 No material in `pasted_content_7.txt` was treated as out of scope. No new skill or overlapping micro-skill was created. The existing `healthos-ai-llm-engineering` package remains the sole target.
+
+
+## Addendum: pasted_content_8.txt
+
+| Requirement from pasted_content_8 | Classification | Integration decision |
+| --- | --- | --- |
+| Provider-neutral normalized AI/domain result | ENHANCEMENT | Added explicit normalized application/domain result semantics and prohibited provider SDK or HealthOS-named results in the universal contract. |
+| Generic Domain Risk Profile mechanism | MISSING CAPABILITY | Added consequence, reversibility, affected-party, sensitivity, regulatory, authorization, validation, oversight, and escalation dimensions. |
+| Generic data classes | ENHANCEMENT | Added PUBLIC, INTERNAL, CONFIDENTIAL, SENSITIVE, and REGULATED/HIGH-IMPACT with project/domain mapping. |
+| Generic memory taxonomy | ENHANCEMENT | Added ephemeral request, session, preference, durable profile, authoritative history, derived attributes, and review-candidate states. |
+| Generic tool criticality classes | MISSING CAPABILITY | Added READ, WRITE, SENSITIVE, DESTRUCTIVE, EXTERNAL, DOMAIN-CRITICAL, and HIGH-CONSEQUENCE, with optional profile-specific criticality. |
+| Deterministic domain-service boundary | ENHANCEMENT | Clarified interpretation/orchestration/explanation versus authoritative deterministic calculation, decision, authorization, and versioned provenanced result. |
+| Multimodal and streaming contracts | ENHANCEMENT | Made modality coverage, provenance, privacy, extraction uncertainty, state transitions, interruption, cancellation, incomplete results, and safe partial output explicit. |
+| Provider Reference as a first-class matrix layer | MISSING CAPABILITY | Reclassified the OpenAI official API/developer-resources row as `PROVIDER REFERENCE` while preserving the 43 requirement families and evidence schema. |
+| HealthOS safety and domain controls | ALREADY COVERED | Preserved PHI, clinical, emergency, medication, health-calculation, multimodal, escalation, and HealthOS ownership controls behind the optional HealthOS profile. |
+| Documentation honesty and currentness | ENHANCEMENT | Updated validation evidence and retained documented/observed/verified/inferred/assumed distinctions and implementation-time volatile-fact checks. |
+| Audit, validation, and release requirements | ALREADY COVERED | Retained the A01–A100 audit, independent second pass, structural checks, source checks, secret/PHI scans, artifact hygiene, commit, push, and remote verification workflow. |
+
+No contradictory or out-of-scope requirement was introduced. The existing skill remains the sole AI/LLM package; no overlapping micro-skill was created and no specialist ownership boundary was absorbed.

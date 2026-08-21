@@ -14,7 +14,7 @@ AI contract
   └── future provider adapter
 ```
 
-The normalized contract represents request intent, approved data classification, model capability requirements, typed content parts, structured-output expectations, tool requests, citations or provenance, usage, refusal or insufficiency, cancellation, incomplete output, and normalized error classes. Provider request/response objects, credentials, SDK clients, and vendor retry semantics remain behind adapters.
+The normalized provider-neutral contract represents request intent, approved data classification, model capability requirements, typed content parts, structured-output expectations, tool requests, citations or provenance, usage, refusal or insufficiency, cancellation, incomplete result, and normalized error classes. The normalized result is an application/domain result, never a provider SDK object and never a HealthOS-named result. Provider request/response objects, credentials, SDK clients, and vendor retry semantics remain behind adapters.
 
 ## Provider composition and configuration
 
@@ -61,7 +61,7 @@ provider output
   → schema validation
   → semantic/domain validation
   → authorization and policy checks
-  → authoritative service or deterministic business logic
+  → authoritative deterministic domain service or deterministic business logic
   → normalized result
 ```
 
@@ -142,7 +142,7 @@ Test for memory poisoning, malicious remembered instructions, stale facts, contr
 
 ## Tools and agents
 
-Each tool definition must declare identity, purpose, input schema, output schema, authorization requirements, privacy/sensitivity classification, side-effect class, idempotency model, timeout, retry policy, cancellation behavior, and audit/correlation ID. Universal side-effect classes include READ, WRITE, SENSITIVE, DESTRUCTIVE, EXTERNAL, and CONSEQUENTIAL; the active profile may add specialized classes.
+Each tool definition must declare identity, purpose, input schema, output schema, authorization requirements, privacy/sensitivity classification, side-effect class, idempotency model, timeout, retry policy, cancellation behavior, and audit/correlation ID. Universal tool criticality classes are READ, WRITE, SENSITIVE, DESTRUCTIVE, EXTERNAL, DOMAIN-CRITICAL, and HIGH-CONSEQUENCE. The active profile may add specialized classes such as HEALTH-CRITICAL, FINANCIAL-CRITICAL, or LEGAL-CRITICAL; those are not universal mandatory concepts.
 
 The model is never the ultimate authority for authorization. Protect against malicious tool descriptions, tool poisoning, prompt-induced bypass, privilege escalation, untrusted tool output, secret leakage, arbitrary code execution, unauthorized writes, and cross-user calls.
 
