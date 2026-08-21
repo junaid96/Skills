@@ -107,3 +107,28 @@ The four later documents substantially repeat the original integration brief and
 | Duplicate requirements across pasted_content_2.txt–pasted_content_5.txt | DUPLICATE | The later documents restate the same capability families and acceptance gates | Consolidate into existing references and this classification artifact; do not append duplicate prose |
 
 The later documents therefore add **two concrete package improvements** beyond the previous finalization pass: explicit provider composition/configuration wording, and a richer completeness-matrix schema. They also sharpen exact cross-skill naming for UI/UX + Design System and iOS + Swift + Xcode; those are integrated as ownership aliases rather than new skills.
+
+
+## Addendum: pasted_content_6.txt — universalization
+
+The universalization document was treated as an instruction to refactor the existing skill in place, not as permission to create a new skill. Its meaningful requirements were classified as follows.
+
+| Requirement family | Classification | Integration decision |
+| --- | --- | --- |
+| Keep the existing skill path and preserve advanced AI/LLM architecture | ALREADY COVERED / PRESERVE | Retain the existing package and references; refactor wording and ownership rather than replacing the architecture |
+| Make the core project-neutral and reusable | MISSING CAPABILITY / INTEGRATED | Added `universal-core.md` and changed `SKILL.md` to load optional profiles and project registries |
+| Move domain terminology, authorities, risk, sensitive-data, evaluation, and retention rules into a domain profile | MISSING CAPABILITY / INTEGRATED | Added `domain-profile.md` and `profiles/healthos-ai-profile.md`; generalized universal references |
+| Preserve HealthOS use without making HealthOS universal | ENHANCEMENT / INTEGRATED | HealthOS remains a backward-compatible optional profile with clinical, PHI, deterministic-service, escalation, and governance controls |
+| Keep provider-specific behavior in provider references | ALREADY COVERED / ENHANCEMENT | Generalized `openai.md`; retained official OpenAI mapping and profile-specific eligibility checks as conditional |
+| Keep specialist implementation in a project registry | MISSING CAPABILITY / INTEGRATED | Added `project-skill-integration.md`; generalized `boundaries.md` and added the HealthOS mapping only as an example |
+| Separate universal, profile, provider, project, platform, and delegated layers | MISSING CAPABILITY / INTEGRATED | Added explicit layer model to `SKILL.md`, `universal-core.md`, `domain-profile.md`, and the project registry |
+| Generalize architecture, evaluation, operations, multimodal, streaming, source governance, and safety | PARTIALLY COVERED / INTEGRATED | Rewrote these references to use profile-neutral language while retaining conditional HealthOS safeguards |
+| Preserve deterministic authoritative-service boundary | ALREADY COVERED / PRESERVE | Generalized from deterministic HealthOS calculations to domain-provided authoritative services; HealthOS formulas remain in the profile |
+| Preserve safety, privacy, PHI, health, and regulatory controls | ALREADY COVERED / PROFILE-SCOPED | Kept health-specific safeguards behind the HealthOS profile and avoided weakening them |
+| Add active profile and registry routing before implementation | MISSING CAPABILITY / INTEGRATED | Router now requires profile/registry resolution and rejects unresolved assumptions |
+| Universal portability acceptance | ENHANCEMENT / INTEGRATED | Updated completeness matrix, adversarial framing, validation evidence, and source policy to test portability and ownership |
+| New separate skill or overlapping micro-skills | OUT OF SCOPE / REJECTED | No new AI/LLM package or micro-skill created |
+| Contradictory requirements | CONTRADICTORY: NONE FOUND | The universalization requirement is compatible with HealthOS support when HealthOS is an optional profile |
+| Repeated existing content | DUPLICATE | Consolidated rather than copied; existing strong controls remain in their focused references |
+
+The resulting package is a **universal AI/LLM core with optional domain profiles, provider references, and project specialist registries**. `healthos-ai-llm-engineering` remains the existing skill identifier and is not a new skill.

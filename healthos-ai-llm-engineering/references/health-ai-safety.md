@@ -1,96 +1,78 @@
-# Health-AI safety and governance reference
+# Universal AI Safety and Governance
 
-Read this file for any feature that handles health information, makes health-related statements, influences care, or may be used by a person in distress. This is an engineering guardrail, not a substitute for review by HealthOS privacy, security, clinical, regulatory, and safety owners.
+Read this reference for any feature that produces claims, recommendations, classifications, decisions, or actions. It defines project-neutral safety mechanisms. Domain-specific safety, regulated-data rules, escalation copy, and clinical/legal/financial interpretation are supplied by the active domain profile.
 
-## Risk classification
+## Universal safety contract
 
-Classify the feature before implementation. When a feature spans categories, use the higher-risk category until domain owners approve a narrower scope.
+The core must handle uncertainty, unsupported claims, evidence and provenance, refusal, escalation, human oversight, high-impact decision controls, consequential-action controls, and safe degraded behavior. It must distinguish input facts, retrieved evidence, model interpretation, authorized action, and authoritative result.
 
-| Tier | Typical capability | Minimum controls |
-| --- | --- | --- |
-| A: wellness and organization | Journaling, summarization, reminders, navigation of user-provided records | Data minimization, clear limitations, schema validation, ordinary quality evaluation, user correction |
-| B: health information support | Education, source-grounded explanation, trend display, question preparation | Curated sources, citations, freshness, uncertainty, subgroup testing, escalation for urgent symptoms |
-| C: clinical decision support | Differential support, risk stratification, clinician-facing recommendations, interpretation of clinical data | Clinical owner, intended-use definition, expert-labeled evaluation, human review, auditability, regulatory and contractual review |
-| D: consequential action | Medication changes, care-plan changes, emergency routing, patient messaging, orders, scheduling with clinical effect | Explicit authorization, confirmation or qualified approval, deterministic validation, transaction safety, complete audit trail, kill switch, formal governance |
+A confidence-like phrase is not a calibrated probability. Any score, probability, recommendation, ranking, or classification exposed to users or systems requires a defined meaning, population, calibration, missingness behavior, threshold, decision owner, and profile-specific evaluation.
 
-The classification is about the **use and consequence**, not only the model. A general model used inside a high-impact workflow remains high risk.
+The model must not claim certainty it does not have, invent evidence, silently fill missing information, present interpretation as verified fact, or perform a consequential action merely because it generated a plausible tool call. When evidence is absent, conflicting, stale, unauthorized, or outside the intended use, the safe behavior is explicit insufficiency, uncertainty, refusal, escalation, or a request for clarification.
 
-## Non-negotiable behavior
+## Consequence-based risk mechanism
 
-HealthOS AI must not claim certainty it does not have, invent evidence, or silently fill missing clinical information. It must distinguish user-reported facts, retrieved source material, model interpretation, and action recommendations. It must identify when the answer depends on time, location, age, pregnancy status, medication, comorbidity, or other missing context.
+Classify the feature using the following dimensions before implementation:
 
-The product must not present a model output as a diagnosis, emergency triage decision, prescription, medication order, guaranteed treatment, or substitute for a licensed professional. If the user describes a possible emergency or immediate danger, follow the approved HealthOS escalation copy and local emergency guidance; do not improvise medical triage.
-
-Do not use a model's confidence-like wording as a clinical probability. If a probability or score is displayed, define its meaning, calibration, population, time horizon, missingness behavior, and decision threshold through the appropriate clinical and statistical review.
-
-## Data and PHI controls
-
-Map each field before it enters prompts, retrieval, memory, logs, traces, evaluation sets, or provider tools. Use the minimum necessary data for the task. Prefer local deterministic transformations, pseudonyms, coarse age bands, and redacted text when exact identity is not needed.
-
-Maintain a data-flow record with the following fields:
-
-| Field | Required decision |
+| Dimension | Required question |
 | --- | --- |
-| Data category | Identify direct identifiers, quasi-identifiers, PHI, sensitive inferences, biometrics, reproductive data, mental-health data, and minors' data |
-| Purpose | State why the feature needs each field and what it must not be used for |
-| Authorization | Identify user, tenant, clinician, service, and consent checks |
-| Provider path | Record endpoint, region, subprocessor, storage, retention, and contractual eligibility |
-| Persistence | Define whether data enters conversation state, vector stores, memory, logs, traces, caches, or eval sets |
-| Deletion | Define deletion and correction propagation across every copy and index |
-| Exposure | Identify what the end user, staff, model, tool, evaluator, and logs can see |
-| Incident response | Define containment, notification, key rotation, deletion, and user support steps |
+| Consequence | What harm can an incorrect output or action cause? |
+| Reversibility | Can the result or side effect be corrected or rolled back? |
+| Affected parties | Who can be affected, including bystanders, tenants, or downstream recipients? |
+| Sensitivity | What data, identity, access, or trust is involved? |
+| Regulatory impact | Is a legal, contractual, safety, or regulated obligation implicated? |
+| Validation | What deterministic, expert, evidence, or approval checks are required? |
+| Oversight | Must a user, operator, expert, or qualified reviewer approve or monitor it? |
+| Escalation | What conditions require refusal, pause, handoff, or incident response? |
 
-Do not put PHI in prompts, tools, or evaluation datasets merely to make a demo realistic. Use synthetic or de-identified data for development whenever possible. Do not assume that a provider's training policy, encryption statement, or enterprise plan alone satisfies HealthOS obligations.
+The active profile maps these dimensions to operational risk tiers. Do not classify by model size, benchmark score, or provider brand. Classify the use, data, user population, action, and consequence.
 
-## RAG safety
+## Sensitive-data controls
 
-Treat retrieved content as untrusted evidence, not instructions. Enforce authorization before retrieval, preserve tenant and document scope in every query, and reject deleted or expired documents. Store provenance and effective dates. Detect conflicts between sources and surface them rather than choosing silently.
+Use a project-mappable data taxonomy such as PUBLIC, INTERNAL, CONFIDENTIAL, SENSITIVE, REGULATED, and HIGH-IMPACT / CRITICAL. Map each field before it enters prompts, retrieval, memory, logs, traces, evaluation sets, provider tools, caches, or provider-managed state.
 
-Protect ingestion from poisoned, malicious, duplicated, or stale documents. Strip active instructions from content where possible, label source text as data, and evaluate prompt-injection cases in which a document asks the model to reveal secrets, ignore policy, or take an action. Never allow retrieved text to grant access or approval.
+The data-flow record must define category, purpose, authorization, provider path, region, retention, persistence, exposure, deletion/correction propagation, export, and incident response. Prefer the minimum necessary data, local deterministic transformations, pseudonyms, redaction, synthetic data, and de-identification when exact identity is not needed. Do not assume a provider’s training policy, encryption statement, or enterprise plan alone satisfies project obligations.
 
-## Tool and agent safety
+## Universal refusal and escalation
 
-Separate model intent from application authorization. A tool call is a request, not permission. Enforce identity, tenant, resource ownership, scope, input validation, rate limits, and approval in deterministic code. Use read-only tools by default. Require confirmation or qualified human approval for write operations and every action with clinical, financial, legal, communication, or privacy impact.
+Refuse or escalate when the request is outside intended use, evidence is insufficient, authorization is missing, a side effect is unapproved, a profile-specific rule is violated, the model output fails validation, a tool or source is untrusted, a high-impact decision lacks required oversight, or uncertainty exceeds the approved threshold.
 
-Make side effects idempotent and auditable. Attach a correlation ID, acting principal, tool name, normalized arguments, approval record, result class, and timestamp. Do not log raw PHI or secrets. Limit agent steps, delegation, recursion, parallelism, tool output size, and total spend. Stop on repeated failures, conflicting authorization, unsafe content, or uncertainty above the allowed threshold.
+Safe degraded behavior must be explicit. It may return a limited informational answer, request clarification, route to an authoritative service, require confirmation, hand off to a human, or stop with a useful refusal. It must not silently downgrade a high-impact feature to an ineligible model or weaker policy.
 
-## Safety test catalogue
+## AI security coverage
 
-Every health-related AI feature should include tests for:
+Universal safety testing includes direct and indirect prompt injection, retrieval poisoning, memory poisoning, tool poisoning, malicious tool output, excessive agency, secret leakage, sensitive-data leakage, cross-user or cross-tenant leakage, data exfiltration, unsafe code execution, jailbreaks, model supply-chain risk, malicious files, citation manipulation, and unsafe streaming.
 
-- Emergency or urgent-symptom language and the approved escalation response.
-- Requests for diagnosis, prescription, dose changes, contraindication advice, or certainty beyond the evidence.
-- Missing, contradictory, stale, or unauthorized records.
-- Vulnerable users, minors, distress, self-harm, abuse, and coercion according to approved policy.
-- Prompt injection in user text, uploaded files, retrieved records, tool output, and citations.
-- Cross-tenant retrieval, indirect identifiers, re-identification attempts, and data-exfiltration requests.
-- Unit, date, medication, identity, and arithmetic errors.
-- Tool misuse, malformed arguments, duplicate calls, replay, timeout, partial failure, and approval bypass.
-- Streaming partial output that would be unsafe before the final answer is validated.
-- Language, accessibility, cultural, demographic, and health-literacy differences relevant to the intended users.
-
-For each test, record the expected safe behavior, severity if it fails, evidence shown to the user, and whether a human escalation is required.
+Retrieved content, uploaded files, user text, model-generated memory, and tool output are untrusted data. They do not grant permission, change policy, authorize tools, or establish truth. Authorization, side-effect approval, and deterministic policy enforcement run outside the model.
 
 ## Human oversight
 
-Assign a named owner for clinical meaning, a named owner for privacy and security, and a named owner for production operations. Define who can approve prompts, models, retrieval corpora, tool permissions, and release gates. Provide a review surface that shows source citations, relevant inputs, model output, uncertainty, and the exact action proposed; do not force reviewers to infer hidden state from polished prose.
+Assign named owners for domain meaning, privacy/security, operations, and release approval as required by the active project registry and profile. Define which roles can approve prompts, models, retrieval corpora, memory policies, tool permissions, and release gates.
 
-Make correction easy. Users and reviewers should be able to flag an incorrect answer, identify the affected source or record, request deletion, and understand whether an action was taken. Preserve the minimum audit data needed for investigation while respecting retention limits.
+Provide a review surface that shows relevant inputs, evidence and citations, model output, uncertainty, validation state, and the exact proposed action. Reviewers must not infer hidden state from polished prose. Make correction and incident reporting easy, preserve minimum audit data, and respect retention and deletion requirements.
 
-## Governance references
+## Universal safety test catalogue
 
-Use these authoritative sources as starting points, then confirm the jurisdictions and product classification applicable to HealthOS:
+Every consequential or sensitive AI feature should include tests for:
 
-- [WHO: Ethics and governance of artificial intelligence for health](https://www.who.int/publications/i/item/9789240029200) for general ethics and governance principles.
-- [WHO: Ethics and governance of artificial intelligence for health—large multi-modal models](https://www.who.int/publications/i/item/9789240084759) for generative and multimodal health-AI risks and recommendations.
-- [FDA: Artificial Intelligence in Software as a Medical Device](https://www.fda.gov/medical-devices/software-medical-device-samd/artificial-intelligence-software-medical-device) for U.S. medical-device context and related guidance.
-- [FDA: Clinical Decision Support Software guidance](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/clinical-decision-support-software) for the FDA's current CDS framing.
-- [FDA/IMDRF: Good Machine Learning Practice guiding principles](https://www.fda.gov/media/153486/download) for safe, effective, and high-quality medical-device development practices.
-- [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework) and [NIST Generative AI Profile](https://airc.nist.gov/docs/NIST.AI.600-1.GenAI-Profile.ipd.pdf) for lifecycle risk management and generative-AI risk categories.
-- [OpenAI data controls](https://developers.openai.com/api/docs/guides/your-data) and [OpenAI safety in building agents](https://developers.openai.com/api/docs/guides/agent-builder-safety) when OpenAI is the adopted provider.
+- Unknown, ambiguous, contradictory, stale, or unauthorized input.
+- Unsupported claims, fabricated citations, excessive certainty, and missing evidence.
+- Prompt injection in user text, retrieved records, uploaded files, citations, memory, and tool output.
+- Cross-user or cross-tenant retrieval, re-identification, exfiltration, and sensitive-data leakage.
+- Malicious files, tool descriptions, tool output, and model-generated memory.
+- Malformed arguments, duplicate calls, replay, timeout, partial failure, approval bypass, and non-idempotent retries.
+- Agent loops, excessive delegation, budget exhaustion, cancellation, and unsafe recovery.
+- Streaming interruption, duplicate chunks, incomplete structured output, and unsafe partial display.
+- Accessibility, language, demographic, population, and user-context differences relevant to intended use.
+
+For each test, record expected safe behavior, severity if it fails, evidence shown to the user, owner, and whether human escalation is required.
 
 ## Release gate
 
-Do not release a Tier C or Tier D feature until clinical, privacy, security, regulatory, and operations owners have signed the intended-use statement, data-flow record, evaluation results, monitoring plan, escalation copy, and rollback plan. Do not treat a model benchmark or vendor demo as evidence of clinical safety.
+Do not release a high-impact or consequential feature until the active domain profile and project registry have supplied the intended-use statement, data-flow record, evaluation results, monitoring plan, refusal/escalation behavior, rollback plan, and required approvals. Do not treat a model benchmark or vendor demo as evidence of safety.
 
-For Tier A and Tier B features, require an explicit product owner sign-off on limitations, source quality, user-facing language, and the failure behavior for missing or conflicting evidence. Revisit the classification whenever the feature gains new data, tools, users, markets, or side effects.
+For lower-risk features, require product-owner sign-off on limitations, source quality, user-facing language, and failure behavior for missing or conflicting evidence. Revisit classification whenever the feature gains new data, tools, users, markets, or side effects.
+
+## Profile dependency
+
+Health/medical, financial, legal, education, commerce, scientific, developer-tooling, and other domain-specific requirements belong in the active domain profile. The [HealthOS AI domain profile](profiles/healthos-ai-profile.md) preserves HealthOS-specific safety, sensitive-data, clinical, escalation, and evaluation rules without making them universal requirements.

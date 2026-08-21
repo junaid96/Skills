@@ -1,90 +1,65 @@
-# Evaluation and production-quality reference
+# Universal AI Evaluation Framework
 
-Read this file when designing a new AI feature, changing prompts or schemas, switching models, adding retrieval or tools, or investigating quality and safety incidents. Evaluation is part of the feature contract, not a final cosmetic check.
+Read this reference for any new AI capability, prompt, schema, provider, retrieval, memory, tool, agent, profile, multimodal, streaming, or model change. Domain profiles add domain-specific datasets, labels, expert review, and thresholds.
 
 ## Evaluation workflow
 
-1. **Define the task contract.** Write the intended input distribution, acceptable outputs, prohibited outputs, refusal conditions, evidence requirements, risk tier, and user-visible fallback.
-2. **Build a versioned dataset.** Include representative cases, boundary cases, missing-evidence cases, conflicting sources, adversarial instructions, malformed inputs, and high-severity health-safety cases. Use synthetic or de-identified data unless approved otherwise.
-3. **Create labels and rubrics.** Prefer expert labels for clinical meaning, privacy, safety, and action authorization. Record acceptable alternatives rather than forcing one wording. Version the rubric with the prompt and schema.
-4. **Test deterministic contracts.** Check schema validity, required fields, enums, units, date formats, citations, authorization, tool arguments, idempotency, timeouts, and error mapping.
-5. **Measure model behavior.** Evaluate quality, groundedness, citation correctness, refusal behavior, subgroup performance, latency, token use, and cost. Use model-based graders only with calibration examples and expert spot checks.
-6. **Run adversarial and regression suites.** Test prompt injection, data exfiltration, cross-tenant access, stale retrieval, tool misuse, unsafe health advice, long context, streaming cancellation, provider errors, and model drift.
-7. **Gate and monitor release.** Compare against the current baseline, define thresholds by risk tier, canary the change, monitor production signals, and retain a rollback path.
+1. **Define the task contract.** State intended use, non-goals, users, inputs, outputs, refusal, insufficiency, uncertainty, authorization, side effects, latency, availability, cost, and risk dimensions.
+2. **Build a versioned dataset.** Include ordinary, edge, unknown-answer, conflicting-source, stale-source, unauthorized, adversarial, multilingual, accessibility, and representative population cases. Record provenance, authorization, licensing, de-identification/synthetic-data decisions, retention, and deletion.
+3. **Create labels and rubrics.** Prefer deterministic labels or qualified reviewers for correctness, safety, actionability, groundedness, citation, uncertainty, and refusal. Calibrate model-based graders against human labels and do not treat grader output as truth.
+4. **Test deterministic contracts.** Validate parsing, schema, semantic invariants, authorization, provenance, tool arguments, idempotency, state transitions, cancellation, and authoritative-service results.
+5. **Measure model behavior.** Evaluate task quality, factuality, groundedness, hallucination, retrieval, memory, tool and agent correctness, safety, security, fairness/accessibility, latency, reliability, and cost.
+6. **Run adversarial and regression suites.** Include injection, poisoning, leakage, jailbreak, malformed output, tool misuse, agent loops, sensitive-data paths, provider failures, upgrade behavior, multimodal attacks, and interrupted streams.
+7. **Gate and monitor release.** Compare with the approved baseline, document tradeoffs, run canary or shadow traffic where appropriate, monitor high-severity signals, preserve rollback, and record approvals.
 
-## Minimum metric set
+## Minimum metric families
 
-| Dimension | Example measures | HealthOS interpretation |
-| --- | --- | --- |
-| Task quality | Exact match, field F1, rubric score, pairwise preference | Does the feature solve the stated task without adding unsupported claims? |
-| Schema contract | Parse success, validation failure rate, refusal rate | Can downstream code safely consume the result? |
-| Groundedness | Evidence entailment, unsupported-claim rate, citation precision | Are claims supported by authorized, current evidence? |
-| Retrieval | Recall@k, precision@k, MRR or nDCG, empty-retrieval behavior | Does the right source reach the model, under access filters? |
-| Tool correctness | Tool selection accuracy, argument validity, authorization rejection, side-effect success | Does the model request the right bounded action without bypassing policy? |
-| Safety | Unsafe completion rate, safe refusal rate, escalation recall, false reassurance rate | Does the system avoid dangerous health behavior and escalate appropriately? |
-| Robustness | Performance under paraphrase, noise, injection, conflict, long context, missing fields | Does behavior remain safe outside the happy path? |
-| Fairness and accessibility | Subgroup quality and safety gaps, language and literacy performance | Are there material disparities for intended users? |
-| Operations | p50/p95/p99 latency, timeout rate, retry rate, cancellation rate, availability | Does the feature behave within product reliability targets? |
-| Economics | Input/output tokens, retrieval tokens, tool count, cache hit rate, cost per task | Is the feature sustainable at expected volume? |
+| Family | Example measures |
+| --- | --- |
+| Task quality | Exact/semantic correctness, completeness, relevance, helpfulness, calibrated uncertainty |
+| Contract | Parse rate, schema validity, semantic validity, refusal/insufficiency correctness |
+| Groundedness | Claim-source support, citation precision/recall, unsupported-claim rate, conflict handling |
+| Retrieval | Recall, precision, ranking quality, freshness, authorization isolation, deletion propagation |
+| Memory | Eligibility, provenance, correction, expiry, contradiction handling, leakage, deletion/export |
+| Tools and agents | Selection, argument validity, authorization, side-effect safety, idempotency, loop prevention, recovery |
+| Safety and security | Unsafe-claim rate, refusal correctness, injection resistance, exfiltration, jailbreak, tool poisoning |
+| Robustness and access | Perturbation, language, accessibility, subgroup, population, and missing-context behavior |
+| Operations | Latency, throughput, availability, timeout, retry, cancellation, duplicate events, incomplete streams |
+| Economics | Tokens, media, embeddings, retrieval, tool/agent steps, cache hit rate, cost per successful task |
+| Regression | Change from approved model, prompt, schema, tool, retrieval, embedding, policy, profile, or route baseline |
 
-Do not collapse all dimensions into one score. A high average quality score cannot compensate for a severe safety, authorization, or privacy failure.
+Do not collapse these dimensions into one score. A high average quality score cannot compensate for severe safety, authorization, privacy, groundedness, or contract failure.
 
 ## Hallucination and groundedness tests
 
-Construct cases where the correct answer is explicitly **unknown**, where the retrieved corpus is empty, where two authorized sources conflict, and where a plausible answer is present only in model pretraining and not in the allowed evidence. The expected behavior should be an uncertainty or insufficiency state, not a fluent guess.
+Include unknown-answer cases, empty retrieval, conflicting authorized sources, stale or superseded sources, plausible information absent from the allowed corpus, ambiguous requests, and missing required context. Require explicit insufficiency or clarification when evidence is unavailable.
 
-For each generated claim, require a source mapping when the feature is source-grounded. Check whether the cited source actually supports the claim, whether the source is authorized for the user, whether it is current, and whether the wording overstates the evidence. For numerical, temporal, medication, and dosage fields, verify with deterministic code or an authoritative service.
+For source-grounded claims, verify source mapping, authorization, currentness, source support, conflict handling, and citation integrity. For numerical, temporal, transactional, policy, or domain-critical values, use deterministic verification or an authoritative service.
 
-## Tool and agent evaluation
+## Tool, agent, memory, and streaming evaluation
 
-Record the complete trace needed to judge the workflow without retaining unnecessary content: model and prompt versions, selected tools, normalized arguments, authorization result, approval state, tool result class, step count, latency, and final outcome. Mask secrets and sensitive payloads.
+Evaluate tool selection, schema compliance, authorization, side effects, replay, duplicate calls, timeout, partial failure, malicious descriptions, malicious output, and rollback. Evaluate agent step budgets, cancellation, recursion, delegation, parallelism, recovery, approval, and terminal states.
 
-Evaluate at least these scenarios:
+Evaluate memory write eligibility, provenance, confidence, freshness, correction, deletion, export, isolation, contradiction, poisoning, and retention. Evaluate streaming start, event ordering, duplicates, reconnect, cancellation, interruption, structured partial output, tool-call events, finalization, and safe UI display. An interrupted stream must not be recorded as a completed result.
 
-| Scenario | Expected result |
-| --- | --- |
-| Correct read-only request | Select the allowed tool with valid arguments and return a grounded answer |
-| Unauthorized resource | Refuse before tool execution; do not leak whether the resource exists |
-| Side effect without approval | Pause or refuse according to policy; never execute silently |
-| Malformed or ambiguous arguments | Ask for clarification or return validation failure |
-| Tool timeout or duplicate delivery | Use bounded retry or safe failure; preserve idempotency |
-| Malicious tool output | Treat output as data; do not follow embedded instructions |
-| Repeated tool loop | Stop at the configured budget and explain the safe limitation |
-| Conflicting tool results | Surface the conflict and avoid an irreversible action |
+## Profile-specific evaluation
 
-## Routing evaluation
+The active domain profile adds terminology/ontology checks, authoritative-service comparisons, domain evidence, domain safety, domain refusals, domain risk thresholds, human review, sensitive-data handling, and regulatory or contractual acceptance. The profile must identify cases where a domain answer is unknown, a rule conflicts, a high-impact action requires approval, or the authoritative service must override the model.
 
-Create a capability matrix for every candidate model with model ID, provider, modality, structured-output support, tool support, context limit, latency distribution, region, retention eligibility, safety controls, and current price. Evaluate routing rules on the same dataset and include failure-aware scenarios.
+A profile change is a behavioral change. Evaluate it together with the model, prompt, schema, tool, retrieval, memory, policy, route, and provider versions that consume it.
 
-Prefer deterministic rules such as risk tier, required modality, maximum latency, region, and data eligibility. Add learned or judge-based routing only after measuring whether the routing gain exceeds its extra complexity and failure surface. Test fallback behavior when the preferred provider is unavailable, rate-limited, or returns an unsafe or invalid result.
+## Release evidence
 
-A routing change passes only when it meets the feature's minimum safety and quality thresholds and improves or preserves the agreed latency and cost envelope. A cheaper model is not a valid fallback if its refusal, groundedness, or subgroup performance is below the risk-tier threshold.
+Before release, preserve:
 
-## Prompt and schema regression
+- Intended use, non-goals, risk dimensions, profile, and specialist owners.
+- Dataset, label/rubric, evaluator, and current-source versions.
+- Baseline and before/after results for quality, safety, groundedness, citations, tools, latency, reliability, cost, and relevant population/accessibility cohorts.
+- High-severity failures, dispositions, residual risk, and required approvals.
+- Monitoring, incident response, kill switch, fallback, canary, and rollback evidence.
+- Exact provider/model/adapter, prompt, schema, tool, retrieval/index, embedding, policy, routing, and profile versions.
 
-Version prompts, system/developer instructions, examples, schemas, retrieval settings, model IDs, and tool definitions together. For every change, run the full regression set plus targeted cases that motivated the change. Keep examples of previously failed outputs as permanent regression tests after removing unnecessary personal data.
-
-When a prompt asks the model to be concise, do not allow brevity to remove uncertainty, citations, safety escalation, or required fields. When a schema changes, migrate consumers explicitly and support compatibility only when it is safe and documented.
-
-## Production monitoring
-
-Monitor aggregate behavior and high-severity events separately. Recommended signals include validation failures, refusal and escalation rates, unsupported-claim reports, citation errors, retrieval misses, cross-tenant authorization denials, tool approval pauses, side-effect failures, latency, timeouts, token use, cost, and user corrections.
-
-Define alert thresholds before launch. For high-risk features, alert on any confirmed authorization bypass, privacy incident, unsafe action, or repeated false reassurance even if the overall error rate is low. Preserve redacted traces and enough version metadata to reproduce the behavior. Do not use raw health content as a routine dashboard dimension.
-
-## Release checklist
-
-A change is release-ready only when the team can answer yes to all applicable questions:
-
-- Is the intended use, non-goal, risk tier, and owner documented?
-- Are input, output, refusal, uncertainty, citation, and error contracts versioned?
-- Is every data path authorized, minimized, retained, and deletable?
-- Are retrieval, tool, and agent behaviors evaluated separately from final answer quality?
-- Are high-severity health, privacy, injection, and authorization tests passing?
-- Are quality, safety, latency, and cost compared with the current baseline?
-- Is human review defined for consequential actions?
-- Are monitoring, incident response, kill switch, and rollback tested?
-- Are user-facing limitations and escalation instructions accurate for the intended market?
+Do not claim runtime, provider, compliance, or safety behavior has been verified unless it was actually executed, tested, or approved through the responsible project and domain owners.
 
 ## Official evaluation references
 

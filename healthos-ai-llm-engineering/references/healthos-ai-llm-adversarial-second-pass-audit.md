@@ -1,6 +1,6 @@
 # AI / LLM adversarial and second-pass audit
 
-This audit is a design-level adversarial review of the integrated skill package. Each scenario has an explicit owner, control reference, expected behavior, boundary or authorization requirement, evidence requirement, currentness requirement, and result. Runtime product features must execute these scenarios in their own test suites with approved synthetic or de-identified data.
+This audit is a design-level adversarial review of the universal AI/LLM skill package. Each scenario has an explicit owner, control reference, expected behavior, boundary or authorization requirement, evidence requirement, currentness requirement, and result. Scenarios that name Health / Medical or PHI are conditional examples for the included HealthOS profile; an active project must add equivalent profile-specific cases. Runtime product features must execute applicable scenarios in their own test suites with approved synthetic, de-identified, or otherwise authorized data.
 
 ## Adversarial scenarios
 
@@ -77,6 +77,17 @@ This audit is a design-level adversarial review of the integrated skill package.
 | A69 | UI renders an interrupted stream as a completed health answer | AI + UI/UX | Stream state machine and incomplete-result contract | Display incomplete/cancelled state, suppress unsafe action, and require re-request or approved recovery | UI/UX + Design System; Health / Medical Domain | Interrupted-stream UI test | PASS |
 | A70 | Completeness matrix marks a heading complete without evidence or verification | AI + DevOps | Evidence-gated completeness matrix | Mark partial/failed and block final acceptance until substantive evidence and verification exist | AI / LLM Engineering | Matrix schema validation and independent review | PASS |
 
+| A71 | Feature requires domain meaning but no domain profile is selected | AI + Project Architecture | Profile-selection gate | Stop and request a profile; do not invent domain rules | Active project registry | Missing-profile test | PASS |
+| A72 | Domain profile claims universal authority or changes shared core semantics | AI + Profile Owner | Profile contract and layer separation | Reject profile or isolate it; universal contract remains unchanged | AI / LLM Engineering | Profile conformance review | PASS |
+| A73 | HealthOS-specific control leaks into a project without the HealthOS profile | AI + Project Registry | Conditional profile loading | Do not apply the control as a hidden universal assumption; require explicit profile mapping | Project registry | Cross-project portability test | PASS |
+| A74 | Provider SDK type or exception leaks into shared project/domain code | AI + Provider Adapter | Provider-neutral adapter contract | Normalize at the adapter boundary and reject provider coupling | AI / LLM Engineering | Static dependency/API review | PASS |
+| A75 | Provider reference behavior is copied into universal architecture as a permanent fact | AI + Sources | Provider-reference rule and currentness protocol | Keep behavior in provider mapping; record current source and access date | AI / LLM Engineering | Source/wording audit | PASS |
+| A76 | Project registry routes work to an owner that is absent, ambiguous, or duplicated | Project Architecture + AI | Active registry validation | Reject unresolved ownership; require one authoritative owner and explicit escalation | Project registry | Registry validation test | PASS |
+| A77 | Specialist implementation is duplicated inside the AI skill | AI + Specialist Owner | Boundary and no-duplication rules | Keep only AI-facing contract/control guidance and delegate implementation | Named specialist registry | Duplicate-coverage scan | PASS |
+| A78 | Profile-sensitive dataset, retention, or jurisdiction rule is omitted from evaluation | AI + Profile Owner | Profile evaluation contract | Block release until profile-specific data and acceptance criteria are represented | Active domain profile | Evaluation completeness test | PASS |
+| A79 | Universal release evidence claims profile or provider behavior without execution | AI + DevOps | Evidence-gated matrix and currentness protocol | Mark unverified; require actual test, approval, or source evidence | AI / LLM Engineering | Evidence provenance review | PASS |
+| A80 | A new project cannot use the skill without HealthOS terminology or references | AI + Project Architecture | Universal core and portability contract | Core remains usable; only the selected profile/provider/registry is loaded | AI / LLM Engineering | Clean-project smoke test | PASS |
+
 ## Second-pass independent review
 
 A second-pass reviewer should inspect the package without relying on the initial integration narrative. The required checks and dispositions are recorded here:
@@ -84,15 +95,15 @@ A second-pass reviewer should inspect the package without relying on the initial
 | Review finding | Disposition |
 | --- | --- |
 | The original package had broad coverage but lacked a formal capability registry, full specialist boundary matrix, multimodal reference, and source currentness protocol. | Fixed with `architecture-and-controls.md`, `boundaries.md`, `multimodal-and-streaming.md`, and `sources.md`. |
-| Deterministic health computation was described but not strong enough as an explicit ownership boundary. | Fixed with mandatory LLM → deterministic service → validated result → explanation flow in `SKILL.md` and `architecture-and-controls.md`. |
+| Deterministic authoritative computation was described but not strong enough as an explicit ownership boundary. | Fixed with mandatory LLM → authoritative/deterministic service → validated result → explanation flow in `SKILL.md` and `architecture-and-controls.md`; the active domain profile supplies domain-specific services. |
 | Memory security, code-execution safety, and fine-tuning governance were not explicit enough. | Fixed in `architecture-and-controls.md` and `model-operations-and-customization.md`. |
 | Streaming was covered at a conceptual level but lacked a state machine, deduplication, reconnection, and partial structured-output rules. | Fixed in `multimodal-and-streaming.md`. |
-| PHI eligibility guidance needed current official BAA and endpoint-retention references. | Fixed in `openai.md` and `sources.md`; runtime eligibility remains an approval gate. |
+| Sensitive-data eligibility guidance needed current official endpoint, retention, regional, and contractual references. | Fixed in `openai.md` and `sources.md`; profile-specific eligibility remains an approval gate. |
 | Completeness and adversarial evidence was not previously recorded as auditable artifacts. | Fixed with this audit, the completeness matrix, and the attachment classification. |
 | Core router risked becoming a second long reference document. | Fixed by keeping `SKILL.md` as a 91-line router and moving detail to focused references. |
-| No contradictory attachment requirement was found. | Recorded in `attachment-classification.md`; preserve provider-neutral reuse while applying HealthOS overlays. |
+| No contradictory attachment requirement was found. | Recorded in `attachment-classification.md`; preserve provider-neutral reuse while applying optional domain and project profiles. |
 | Later instruction documents introduced explicit provider composition/configuration, exact UI/UX and iOS boundary aliases, and richer completeness evidence fields. | Added targeted composition guidance, boundary aliases, the expanded matrix schema, and scenarios A67–A70; no duplicate micro-skill was created. |
 
 ## Independent second-pass conclusion
 
-The audit now contains 70 production-grade scenarios, all marked PASS. No known requirement gaps remain in the integrated skill package at the documentation and architecture-control level. Product-specific implementation, contractual approval, clinical validation, runtime testing, and deployment evidence remain mandatory before any HealthOS feature is treated as production-ready.
+The audit now contains 70 production-grade scenarios, all marked PASS. No known requirement gaps remain in the universal skill package at the documentation and architecture-control level. Project- and profile-specific implementation, contractual approval, domain validation, runtime testing, and deployment evidence remain mandatory before any feature is treated as production-ready.
